@@ -2,6 +2,9 @@
 #define __ADRC_H_
 #include <vector>
 #include <cmath>
+#include <random>
+#include <ctime>
+#include <algorithm>
 using namespace std;
 
 

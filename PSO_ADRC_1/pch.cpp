@@ -96,7 +96,7 @@ void pso::Optimization_iteration()
 				xg_best = xp_best[j];
 				fg_best = fp_best[j];
 			}
-			if (abs(fp_best[j] - fg_best) < 0.05)
+			if (abs(fp_best[j] - fg_best) < 0.03)
 				flag_sum++;
 			out_P << fixed << setw(12) << setprecision(5) << x_i[j][0];	//行表示种群数量20，且表示迭代数*整定参数维度20*2
 			out_I << fixed << setw(12) << setprecision(5) << x_i[j][1];
@@ -106,9 +106,9 @@ void pso::Optimization_iteration()
 		out_I << endl;
 		out_b << endl;
 		out_res << k << fixed << setw(12) << setprecision(5) << fg_best << endl;	//粒子群算法优化结果
-		if (abs(fg_best_last - fg_best) / fg_best_last < 1e-5 && flag_sum > 0.75 * N_particle)					//设置迭代终止条件 && flag_sum > (int)(N_particle * 0.75)
-			break;
 		fg_best_last = fg_best;
+		if (abs(fg_best_last - fg_best) / fg_best_last < 1e-4 && flag_sum > 0.75 * N_particle)					//设置迭代终止条件 && flag_sum > (int)(N_particle * 0.75)
+			break;
 	}
 	function_1(xg_best);			//每次迭代将最优结果保存
 	out_res << "最优变量:" << endl;

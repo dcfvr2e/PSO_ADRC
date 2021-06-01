@@ -9,6 +9,8 @@ ESOState_TypeDef ESOState_Roll;
 NLSEFState_TypeDef NLSEFState_Roll;
 
 vector<vector<double>> data_log;
+default_random_engine rand_e; //引擎
+normal_distribution<double> rand_noise(0, 0.001); //均值, 方差
 
 static void fhan_Init(void)				//fhan()函数：自抗扰技术中，离散系统最速控制综合函数的一种简化
 {
@@ -154,7 +156,7 @@ vector<double> ADRC_sim(vector<double> x_v)
 	double total_t = 10;
 	int N = floor(total_t / Tt);	//样本总数
 	double phi_ref = 1;					//参考值
-	vector<double> y(N+1,0);
+	vector<double> y(N + 1, 0);
 	vector<double> u(N+1,0);
 	vector<double> T = { 0,0.005 };
 	//		       5					6.131e-05 z + 6.015e-05
@@ -165,7 +167,7 @@ vector<double> ADRC_sim(vector<double> x_v)
 	NLSEFState_Roll.b = x_v[2];
 	ESOParas_Roll.b = x_v[2];
 	for (int i = 2; i <= N; i++) {
-		y[i] = 1.944 * y[i-1] - 0.944 * y[i-2] + 6.131e-05 * u[i-1] + 6.015e-05 * u[i-2];
+		y[i] = 1.944 * y[i - 1] - 0.944 * y[i - 2] + 6.131e-05 * u[i - 1] + 6.015e-05 * u[i - 2] + 0.1 * rand_noise(rand_e);
 		
 		TD_Atti(&TDState_RollRadio, phi_ref, &TD_fhanParas_RollRadio);
 		ESO_Atti(y[i-1], u[i-1], &ESOParas_Roll, &ESOState_Roll);
@@ -180,27 +182,34 @@ vector<double> ADRC_sim(vector<double> x_v)
 
 void function_1(vector<double> x) {		//计算并保留最优参数下的数据
 	ofstream out_y_best("PSO y_best.txt");
+	ofstream out_noise("PSO noise.txt");
 	double Tt = 0.005;		//仿真采样时间
 	double total_t = 10;
 	int N = floor(total_t / Tt);	//样本总数
 	double r = 1;				//参考值
 	double e = 0;
+	double noise_temp = 0;
 	vector<double> y(N+1, 0);
 	vector<double> u(N+1, 0);
 	NLSEFState_Roll.b1 = x[0];
 	NLSEFState_Roll.b2 = x[1];
 	NLSEFState_Roll.b = x[2];
 	ESOParas_Roll.b = x[2];
+	out_y_best << y[0] << endl;
+	out_y_best << y[1] << endl;
 	for (int i = 2; i <= N; i++) {
-		y[i] = 1.944 * y[i - 1] - 0.944 * y[i - 2] + 6.131e-05 * u[i - 1] + 6.015e-05 * u[i - 2];
+		noise_temp = 0.1 * rand_noise(rand_e);
+		y[i] = 1.944 * y[i - 1] - 0.944 * y[i - 2] + 6.131e-05 * u[i - 1] + 6.015e-05 * u[i - 2] + noise_temp;
 
 		TD_Atti(&TDState_RollRadio, r, &TD_fhanParas_RollRadio);
 		ESO_Atti(y[i - 1], u[i - 1], &ESOParas_Roll, &ESOState_Roll);
 		NLSEF_Atti(&TDState_RollRadio, &ESOState_Roll, &NLSEFState_Roll);
 		u[i] = NLSEFState_Roll.u;
 		out_y_best << y[i] << endl;
+		out_noise << setprecision(5) << noise_temp << endl;
 	}
 	out_y_best.close();
+	out_noise.close();
 	cout << "最终参数为:" << endl;
 	for (int i = 0; i < x.size(); i++)
 	{
