@@ -50,10 +50,14 @@ void pso::Initialize_fit_extremum()
 void pso::Optimization_iteration()
 {
 	extern RandomNumber r;       //定义全局随机数
-	ofstream out_P("PSO para x[0].txt");
-	ofstream out_I("PSO para x[1].txt");
-	ofstream out_b("PSO para x[2].txt");
-	ofstream out_res("PSO iteration result.txt");
+	ofstream out_beta1("PSO para beta1.csv");
+	ofstream out_beta2("PSO para beta2.csv");
+	ofstream out_b("PSO para b.csv");
+	ofstream out_b1("PSO para b1.csv");
+	ofstream out_b2("PSO para b2.csv");
+	ofstream out_b3("PSO para b3.csv");
+	ofstream out_res("PSO iteration result.csv");
+	ofstream out_f_value("PSO f value.csv");
 	double f;
 	for (int k = 0; k < M_particle; k++)		//迭代次数
 	{
@@ -98,16 +102,24 @@ void pso::Optimization_iteration()
 			}
 			if (abs(fp_best[j] - fg_best) < 0.03)
 				flag_sum++;
-			out_P << fixed << setw(12) << setprecision(5) << x_i[j][0];	//行表示种群数量20，且表示迭代数*整定参数维度20*2
-			out_I << fixed << setw(12) << setprecision(5) << x_i[j][1];
-			out_b << fixed << setw(12) << setprecision(5) << x_i[j][2];
+			out_beta1 << setprecision(5) << x_i[j][0] << ",";//行表示种群数量20，且表示迭代数*整定参数维度20*2
+			out_beta2 << setprecision(5) << x_i[j][1] << ",";
+			out_b << setprecision(5) << x_i[j][2] << ",";
+			out_b1 << setprecision(5) << x_i[j][3] << ",";
+			out_b2 << setprecision(5) << x_i[j][4] << ",";
+			out_b3 << setprecision(5) << x_i[j][5] << ",";
+			out_f_value << setprecision(5) << f << ",";
 		}
-		out_P << endl;
-		out_I << endl;
+		out_beta1 << endl;
+		out_beta2 << endl;
 		out_b << endl;
+		out_b1 << endl;
+		out_b2 << endl;
+		out_b3 << endl;
+		out_f_value << endl;
 		out_res << k << fixed << setw(12) << setprecision(5) << fg_best << endl;	//粒子群算法优化结果
 		fg_best_last = fg_best;
-		if (abs(fg_best_last - fg_best) / fg_best_last < 1e-4 && flag_sum > 0.75 * N_particle)					//设置迭代终止条件 && flag_sum > (int)(N_particle * 0.75)
+		if (abs(fg_best_last - fg_best) / fg_best_last < 1e-4 && flag_sum > 0.75 * N_particle)			//设置迭代终止条件
 			break;
 	}
 	function_1(xg_best);			//每次迭代将最优结果保存
@@ -118,9 +130,13 @@ void pso::Optimization_iteration()
 	}
 	out_res << "最优值=" << fixed << setw(12) << setprecision(5) << fg_best << endl;
 	out_res.close();
-	out_P.close();
-	out_I.close();
+	out_beta1.close();
+	out_beta2.close();
 	out_b.close();
+	out_b1.close();
+	out_b2.close();
+	out_b3.close();
+	out_f_value.close();
 }
 
 double cost_function(vector<double> y_v)
@@ -143,7 +159,7 @@ double cost_function(vector<double> y_v)
 		sigma = 0;
 	else
 		sigma = (*y_max_pos - y_infty) / y_infty;	//超调
-	double fx_v = 0.2 * (ts - 0.3) * (ts - 0.3) + 0.8 * (sigma - 0.02) * (sigma - 0.02);		//评价指标
+	double fx_v = 0.2 * (ts - 0.6) * (ts - 0.6) + 0.8 * (sigma - 0.02) * (sigma - 0.02);		//评价指标
 	cout << "调节时间：" << fixed << setw(10) << setprecision(4) << ts
 		<< "   超调量：" << fixed << setw(10) << setprecision(4) << sigma
 		<< "   评价指标：" << fixed << setw(10) << setprecision(4) << fx_v << endl;

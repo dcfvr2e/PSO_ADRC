@@ -37,8 +37,8 @@ private:
 	double w_max = 0.9;       //最大惯性权重因子，影响着全局搜索
 	double w_min = 0.6;       //最小惯性权重因子，局部深度搜索能力
 	int M_particle = 40;     //最大迭代次数，200
-	int D_particle = 3;       //搜索空间的维数也叫变量个数
-	int N_particle = 20;      //初始化群体的个体，N很小容易陷入局部优化,N很大优化能力很好，优化的寻优精度和运行时间
+	int D_particle = 6;       //搜索空间的维数也叫变量个数
+	int N_particle = 30;      //初始化群体的个体，N很小容易陷入局部优化,N很大优化能力很好，优化的寻优精度和运行时间
 public:
 	vector <vector <double>>x_i;     //粒子群位置
 	vector<vector <double>>v_i;      //粒子群速度
@@ -48,10 +48,10 @@ public:
 	double fg_best;                  //全局最优值
 	double fg_best_last;			 //上一时刻全局最优值
 	double w_particle;               //权重更新
-	vector<double>x_low = { 0.0, 0.0, 0 };   //优化变量下限值
-	vector<double>x_high = { 20.0, 10.0, 10.0 };   //优化变量上限值
-	vector<double>v_low = { -1.0, -1.0, -1.0 };     //飞行速度下限值
-	vector<double>v_high = { 1.0, 1.0, 1.0 };     //飞行速度上限值
+	vector<double>x_low = {	10.0,	0.0,	0,		5.0,	300.0, 600.0	};   //优化变量下限值
+	vector<double>x_high = { 30.0,	14.0,	10.0,	25,		500.0, 850.0	};   //优化变量上限值
+	vector<double>v_low = { -3.0,	-2.0,	-2.0,	 -5.0,	 -30.0, -70.0};     //飞行速度下限值
+	vector<double>v_high = { 3.0,	2.0,	2.0,	 5.0,	 30.0, 70.0};     //飞行速度上限值
 	double r1, r2;                    //r1、r2为增加随机搜索性
 	void Initialize_fit_extremum();	//给定初始化粒子群速度和位置,计算粒子群适应度，初始化个体极值和全局极值
 	void Optimization_iteration();//寻优迭代

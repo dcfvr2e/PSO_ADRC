@@ -14,20 +14,20 @@ normal_distribution<double> rand_noise(0, 0.001); //均值, 方差
 
 static void fhan_Init(void)				//fhan()函数：自抗扰技术中，离散系统最速控制综合函数的一种简化
 {
-	TD_fhanParas_RollRadio.h = 0.005;
+	TD_fhanParas_RollRadio.h = 0.004;
 	TD_fhanParas_RollRadio.r = 50;
 }
 
 static void TD_Init(void)
 {
-	TDState_RollRadio.h = 0.005;
+	TDState_RollRadio.h = 0.004;
 	TDState_RollRadio.x1 = 0;
 	TDState_RollRadio.x2 = 0;
 }
 
 static void ESO_Init(void)
 {
-	ESOParas_Roll.h = 0.005;
+	ESOParas_Roll.h = 0.004;
 	ESOParas_Roll.b = 7;
 	ESOParas_Roll.b1 = 50;
 	ESOParas_Roll.b2 = 150;
@@ -152,13 +152,13 @@ void NLSEF_Atti(TDState_TypeDef *tdstate, ESOState_TypeDef *esostate, NLSEFState
 }
 vector<double> ADRC_sim(vector<double> x_v)
 {
-	double Tt = 0.005;		//仿真采样时间，需要相应修改差分传递函数
+	double Tt = 0.004;		//仿真采样时间，需要相应修改差分传递函数
 	double total_t = 10;
 	int N = floor(total_t / Tt);	//样本总数
 	double phi_ref = 1;					//参考值
 	vector<double> y(N + 1, 0);
 	vector<double> u(N+1,0);
-	vector<double> T = { 0,0.005 };
+	vector<double> T = { 0,0.004 };
 	//		       5					6.131e-05 z + 6.015e-05
 	//G(s) = ---------------   --->  --------------------------
 	//		   s^2 + 11.55s				z^2 - 1.944 z + 0.9439
@@ -166,6 +166,9 @@ vector<double> ADRC_sim(vector<double> x_v)
 	NLSEFState_Roll.b2 = x_v[1];
 	NLSEFState_Roll.b = x_v[2];
 	ESOParas_Roll.b = x_v[2];
+	ESOParas_Roll.b1 = x_v[3];
+	ESOParas_Roll.b2 = x_v[4];
+	ESOParas_Roll.b3 = x_v[5];
 	for (int i = 2; i <= N; i++) {
 		y[i] = 1.944 * y[i - 1] - 0.944 * y[i - 2] + 6.131e-05 * u[i - 1] + 6.015e-05 * u[i - 2] + 0.1 * rand_noise(rand_e);
 		
@@ -181,9 +184,9 @@ vector<double> ADRC_sim(vector<double> x_v)
 }
 
 void function_1(vector<double> x) {		//计算并保留最优参数下的数据
-	ofstream out_y_best("PSO y_best.txt");
-	ofstream out_noise("PSO noise.txt");
-	double Tt = 0.005;		//仿真采样时间
+	ofstream out_y_best("PSO y_best.csv");
+	ofstream out_noise("PSO noise.csv");
+	double Tt = 0.004;		//仿真采样时间
 	double total_t = 10;
 	int N = floor(total_t / Tt);	//样本总数
 	double r = 1;				//参考值
@@ -195,6 +198,9 @@ void function_1(vector<double> x) {		//计算并保留最优参数下的数据
 	NLSEFState_Roll.b2 = x[1];
 	NLSEFState_Roll.b = x[2];
 	ESOParas_Roll.b = x[2];
+	ESOParas_Roll.b1 = x[3];
+	ESOParas_Roll.b2 = x[4];
+	ESOParas_Roll.b3 = x[5];
 	out_y_best << y[0] << endl;
 	out_y_best << y[1] << endl;
 	for (int i = 2; i <= N; i++) {
