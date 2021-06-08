@@ -63,8 +63,8 @@ typedef struct _esostate
 
 typedef struct _nlsefpara
 {
-	float b1;
-	float b2;
+	float beta1;
+	float beta2;
 	float b;
 	float a1;
 	float a2;
@@ -90,7 +90,6 @@ void TD_Atti(TDState_TypeDef *state, float v, fhanParas_TypeDef *para);
 void NLSEF_Atti(TDState_TypeDef *tdstate, ESOState_TypeDef *esostate, NLSEFState_TypeDef *nlsefstate);
 void ESO_Atti(const double y, const double u, ESOParas_TypeDef *para, ESOState_TypeDef *state);
 vector<double> ADRC_sim(vector<double> x_v);
-void data_log_to_csv(void);
 
 template<typename T1, typename T2>
 T1 AMP_Limit(T1 value, T2 max, T2 min);

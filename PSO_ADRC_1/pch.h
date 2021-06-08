@@ -48,10 +48,11 @@ public:
 	double fg_best;                  //全局最优值
 	double fg_best_last;			 //上一时刻全局最优值
 	double w_particle;               //权重更新
-	vector<double>x_low = {	10.0,	0.0,	0,		5.0,	300.0, 600.0	};   //优化变量下限值
-	vector<double>x_high = { 30.0,	14.0,	10.0,	25,		500.0, 850.0	};   //优化变量上限值
-	vector<double>v_low = { -3.0,	-2.0,	-2.0,	 -5.0,	 -30.0, -70.0};     //飞行速度下限值
-	vector<double>v_high = { 3.0,	2.0,	2.0,	 5.0,	 30.0, 70.0};     //飞行速度上限值
+//parameters need to be tuned (beta1, beta2, b,		b1,		b2,		b3		)
+	vector<double>x_low = {	1.0,	1.0,	1.0,	1.0,	200.0, 400.0	};   //优化变量下限值
+	vector<double>x_high = { 50.0,	30.0,	10.0,	50.0,	500.0, 1000.0	};   //优化变量上限值
+	vector<double>v_low = { -4.0,	-3.0,	-0.9,	 -5.0,	 -30.0, -100.0	};     //飞行速度下限值
+	vector<double>v_high = { 4.0,	3.0,	0.9,	 5.0,	 30.0,	100.0	};     //飞行速度上限值
 	double r1, r2;                    //r1、r2为增加随机搜索性
 	void Initialize_fit_extremum();	//给定初始化粒子群速度和位置,计算粒子群适应度，初始化个体极值和全局极值
 	void Optimization_iteration();//寻优迭代
@@ -59,5 +60,4 @@ public:
 double function(vector<double> x);		//目标函数
 void function_1(vector<double> x);		//最终优化参数得到优化曲线
 double cost_function(vector<double> y_v);	//模型函数
-extern ofstream oFile;
 #endif //PCH_H

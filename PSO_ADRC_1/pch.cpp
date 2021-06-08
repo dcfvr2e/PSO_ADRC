@@ -56,7 +56,7 @@ void pso::Optimization_iteration()
 	ofstream out_b1("PSO para b1.csv");
 	ofstream out_b2("PSO para b2.csv");
 	ofstream out_b3("PSO para b3.csv");
-	ofstream out_res("PSO iteration result.csv");
+	ofstream out_res("PSO iteration result.txt");
 	ofstream out_f_value("PSO f value.csv");
 	double f;
 	for (int k = 0; k < M_particle; k++)		//迭代次数
@@ -119,7 +119,7 @@ void pso::Optimization_iteration()
 		out_f_value << endl;
 		out_res << k << fixed << setw(12) << setprecision(5) << fg_best << endl;	//粒子群算法优化结果
 		fg_best_last = fg_best;
-		if (abs(fg_best_last - fg_best) / fg_best_last < 1e-4 && flag_sum > 0.75 * N_particle)			//设置迭代终止条件
+		if (abs(fg_best_last - fg_best) / fg_best_last < 1e-4 && flag_sum > 0.9 * N_particle)			//设置迭代终止条件
 			break;
 	}
 	function_1(xg_best);			//每次迭代将最优结果保存
@@ -143,11 +143,12 @@ double cost_function(vector<double> y_v)
 {
 	double Tt = 0.005;		//仿真采样周期
 	double y_infty = y_v[y_v.size() - 1];
+	double reference = 1;
 	vector<double> err;
 	for (unsigned int i = 0; i < y_v.size(); i++)
 		err.push_back(abs(y_v[i] - y_infty));
 	reverse(err.begin(), err.end());
-	double delt_err = 0.02;
+	double delt_err = 0.05;
 	unsigned int iter;
 	for (iter = 0; iter < err.size(); iter++)//逆序后首次进入稳态0.02倍的点
 		if (err[iter] > y_infty * delt_err)
@@ -159,9 +160,11 @@ double cost_function(vector<double> y_v)
 		sigma = 0;
 	else
 		sigma = (*y_max_pos - y_infty) / y_infty;	//超调
-	double fx_v = 0.2 * (ts - 0.6) * (ts - 0.6) + 0.8 * (sigma - 0.02) * (sigma - 0.02);		//评价指标
-	cout << "调节时间：" << fixed << setw(10) << setprecision(4) << ts
-		<< "   超调量：" << fixed << setw(10) << setprecision(4) << sigma
-		<< "   评价指标：" << fixed << setw(10) << setprecision(4) << fx_v << endl;
+	double stabile_err = y_infty - reference;
+	double fx_v = 1.0 * pow(ts - 1.2, 2) + 2.0 * pow(sigma - 0.05, 2) + 6.0 * pow(stabile_err, 2);		//评价指标
+	cout << "调节时间：" << fixed << setw(10) << setprecision(5) << ts
+		<< "   超调量：" << fixed << setw(10) << setprecision(5) << sigma
+		<< "   稳态误差：" << fixed << setw(10) << setprecision(5) << stabile_err
+		<< "   评价指标：" << fixed << setw(10) << setprecision(5) << fx_v << endl;
 	return fx_v;
 }

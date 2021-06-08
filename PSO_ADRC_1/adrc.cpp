@@ -10,31 +10,31 @@ NLSEFState_TypeDef NLSEFState_Roll;
 
 vector<vector<double>> data_log;
 default_random_engine rand_e; //引擎
-normal_distribution<double> rand_noise(0, 0.001); //均值, 方差
+normal_distribution<double> rand_noise(0, 0.5); //均值, 方差
 
 static void fhan_Init(void)				//fhan()函数：自抗扰技术中，离散系统最速控制综合函数的一种简化
 {
-	TD_fhanParas_RollRadio.h = 0.004;
-	TD_fhanParas_RollRadio.r = 50;
+	TD_fhanParas_RollRadio.h = 0.005;
+	TD_fhanParas_RollRadio.r = 150;
 }
 
 static void TD_Init(void)
 {
-	TDState_RollRadio.h = 0.004;
+	TDState_RollRadio.h = 0.005;
 	TDState_RollRadio.x1 = 0;
 	TDState_RollRadio.x2 = 0;
 }
 
 static void ESO_Init(void)
 {
-	ESOParas_Roll.h = 0.004;
-	ESOParas_Roll.b = 7;
-	ESOParas_Roll.b1 = 50;
-	ESOParas_Roll.b2 = 150;
-	ESOParas_Roll.b3 = 800;
+	ESOParas_Roll.h = 0.005;
+	ESOParas_Roll.b = 6.1;
+	ESOParas_Roll.b1 = 17.7;
+	ESOParas_Roll.b2 = 374;
+	ESOParas_Roll.b3 = 1500;
 	ESOParas_Roll.a1 = 0.7;
 	ESOParas_Roll.a2 = 0.1;
-	ESOParas_Roll.d = 0.05;
+	ESOParas_Roll.d = 0.1;
 
 	ESOState_Roll.z1 = 0;
 	ESOState_Roll.z2 = 0;
@@ -43,12 +43,12 @@ static void ESO_Init(void)
 
 static void NLSEF_Init(void)
 {
-	NLSEFState_Roll.b1 = 5;
-	NLSEFState_Roll.b2 = 2.5;
-	NLSEFState_Roll.b = 7;
+	NLSEFState_Roll.beta1 = 30;
+	NLSEFState_Roll.beta2 = 10;
+	NLSEFState_Roll.b = 6.1;
 	NLSEFState_Roll.a1 = 0.6;
-	NLSEFState_Roll.a2 = 0.9;
-	NLSEFState_Roll.d = 0.02;
+	NLSEFState_Roll.a2 = 1.5;
+	NLSEFState_Roll.d = 0.1;
 	NLSEFState_Roll.u = 0;
 }
 
@@ -148,34 +148,36 @@ void NLSEF_Atti(TDState_TypeDef *tdstate, ESOState_TypeDef *esostate, NLSEFState
 	else
 		u2 = e2 / pow(nlsefstate->d, 1 - nlsefstate->a2);
 
-	nlsefstate->u = nlsefstate->b1 * u1 + nlsefstate->b2 * u2 - esostate->z3 / nlsefstate->b;
+	nlsefstate->u = nlsefstate->beta1 * u1 + nlsefstate->beta2 * u2 - esostate->z3 / nlsefstate->b;
 }
 vector<double> ADRC_sim(vector<double> x_v)
 {
-	double Tt = 0.004;		//仿真采样时间，需要相应修改差分传递函数
+	double Tt = 0.005;		//仿真采样时间，需要相应修改差分传递函数
 	double total_t = 10;
 	int N = floor(total_t / Tt);	//样本总数
 	double phi_ref = 1;					//参考值
 	vector<double> y(N + 1, 0);
 	vector<double> u(N+1,0);
-	vector<double> T = { 0,0.004 };
+	vector<double> T = { 0,Tt };
 	//		       5					6.131e-05 z + 6.015e-05
 	//G(s) = ---------------   --->  --------------------------
 	//		   s^2 + 11.55s				z^2 - 1.944 z + 0.9439
-	NLSEFState_Roll.b1 = x_v[0];
-	NLSEFState_Roll.b2 = x_v[1];
+	NLSEFState_Roll.beta1 = x_v[0];
+	NLSEFState_Roll.beta2 = x_v[1];
 	NLSEFState_Roll.b = x_v[2];
 	ESOParas_Roll.b = x_v[2];
 	ESOParas_Roll.b1 = x_v[3];
 	ESOParas_Roll.b2 = x_v[4];
 	ESOParas_Roll.b3 = x_v[5];
 	for (int i = 2; i <= N; i++) {
-		y[i] = 1.944 * y[i - 1] - 0.944 * y[i - 2] + 6.131e-05 * u[i - 1] + 6.015e-05 * u[i - 2] + 0.1 * rand_noise(rand_e);
-		
+		y[i] = 1.944 * y[i - 1] - 0.9439 * y[i - 2] + 6.131e-05 * u[i - 1] + 6.015e-05 * u[i - 2];
 		TD_Atti(&TDState_RollRadio, phi_ref, &TD_fhanParas_RollRadio);
 		ESO_Atti(y[i-1], u[i-1], &ESOParas_Roll, &ESOState_Roll);
 		NLSEF_Atti(&TDState_RollRadio, &ESOState_Roll, &NLSEFState_Roll);
 		u[i] = NLSEFState_Roll.u;
+		if (i % 5 == 0) {
+			u[i] = u[i] + 50 * rand_noise(rand_e);
+		}
 		T.push_back(Tt*i);
 	}
 	data_log.push_back(T);
@@ -186,33 +188,43 @@ vector<double> ADRC_sim(vector<double> x_v)
 void function_1(vector<double> x) {		//计算并保留最优参数下的数据
 	ofstream out_y_best("PSO y_best.csv");
 	ofstream out_noise("PSO noise.csv");
-	double Tt = 0.004;		//仿真采样时间
+	double Tt = 0.005;		//仿真采样时间
 	double total_t = 10;
 	int N = floor(total_t / Tt);	//样本总数
 	double r = 1;				//参考值
 	double e = 0;
-	double noise_temp = 0;
+	double rand_temp = 0;
 	vector<double> y(N+1, 0);
 	vector<double> u(N+1, 0);
-	NLSEFState_Roll.b1 = x[0];
-	NLSEFState_Roll.b2 = x[1];
+	NLSEFState_Roll.beta1 = x[0];
+	NLSEFState_Roll.beta2 = x[1];
 	NLSEFState_Roll.b = x[2];
 	ESOParas_Roll.b = x[2];
 	ESOParas_Roll.b1 = x[3];
 	ESOParas_Roll.b2 = x[4];
 	ESOParas_Roll.b3 = x[5];
-	out_y_best << y[0] << endl;
-	out_y_best << y[1] << endl;
+	out_y_best << "time(s)" << ',' << "ADRC y best" << endl;
+	out_y_best << 0 << ',' << y[0] << endl;
+	out_y_best << Tt << ',' << y[1] << endl;
+	out_noise << "time(s)" << ',' << "ADRC noise" << endl;
+	out_noise << 0 << ',' << setprecision(5) <<0 << endl;
+	out_noise << Tt << ',' << setprecision(5) << 0 << endl;
 	for (int i = 2; i <= N; i++) {
-		noise_temp = 0.1 * rand_noise(rand_e);
-		y[i] = 1.944 * y[i - 1] - 0.944 * y[i - 2] + 6.131e-05 * u[i - 1] + 6.015e-05 * u[i - 2] + noise_temp;
-
+		//rand_temp = 0.005*rand_noise(rand_e);
+		y[i] = 1.944 * y[i - 1] - 0.9439 *  y[i - 2] + 6.131e-05 * u[i - 1] + 6.015e-05 * u[i - 2];
 		TD_Atti(&TDState_RollRadio, r, &TD_fhanParas_RollRadio);
 		ESO_Atti(y[i - 1], u[i - 1], &ESOParas_Roll, &ESOState_Roll);
 		NLSEF_Atti(&TDState_RollRadio, &ESOState_Roll, &NLSEFState_Roll);
 		u[i] = NLSEFState_Roll.u;
-		out_y_best << y[i] << endl;
-		out_noise << setprecision(5) << noise_temp << endl;
+		if (i % 5 == 0)
+		{
+			rand_temp = 50 * rand_noise(rand_e);
+			u[i] = u[i] + rand_temp;
+			out_noise << Tt * i << ',' << setprecision(5) << rand_temp << endl;
+		}
+		else
+			out_noise << Tt * i << ',' << setprecision(5) << 0 << endl;
+		out_y_best << Tt * i << ',' << y[i] << endl;
 	}
 	out_y_best.close();
 	out_noise.close();
@@ -224,16 +236,6 @@ void function_1(vector<double> x) {		//计算并保留最优参数下的数据
 	cost_function(y);
 }
 
-void data_log_to_csv() {
-	for (unsigned int j = 0; j < data_log[0].size(); j++)
-		oFile << data_log[0][j] << ",";
-	oFile << endl;
-	for (unsigned int i = 1; i < data_log.size(); i = i+2) {
-		for (unsigned int j = 0; j < data_log[i].size(); j++)
-			oFile << data_log[i][j] << ",";
-		oFile << endl;
-	}
-}
 template<typename T1, typename T2>
 T1 AMP_Limit(T1 value, T2 max, T2 min){
 	T1 res;
