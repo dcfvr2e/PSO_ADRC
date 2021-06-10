@@ -175,9 +175,9 @@ vector<double> ADRC_sim(vector<double> x_v)
 		ESO_Atti(y[i-1], u[i-1], &ESOParas_Roll, &ESOState_Roll);
 		NLSEF_Atti(&TDState_RollRadio, &ESOState_Roll, &NLSEFState_Roll);
 		u[i] = NLSEFState_Roll.u;
-		if (i % 5 == 0) {
-			u[i] = u[i] + 50 * rand_noise(rand_e);
-		}
+		//if (i % 5 == 0) {
+		//	u[i] = u[i] + 50 * rand_noise(rand_e);
+		//}
 		T.push_back(Tt*i);
 	}
 	data_log.push_back(T);
@@ -216,14 +216,14 @@ void function_1(vector<double> x) {		//计算并保留最优参数下的数据
 		ESO_Atti(y[i - 1], u[i - 1], &ESOParas_Roll, &ESOState_Roll);
 		NLSEF_Atti(&TDState_RollRadio, &ESOState_Roll, &NLSEFState_Roll);
 		u[i] = NLSEFState_Roll.u;
-		if (i % 5 == 0)
-		{
-			rand_temp = 50 * rand_noise(rand_e);
-			u[i] = u[i] + rand_temp;
-			out_noise << Tt * i << ',' << setprecision(5) << rand_temp << endl;
-		}
-		else
-			out_noise << Tt * i << ',' << setprecision(5) << 0 << endl;
+		//if (i % 5 == 0)
+		//{
+		//	rand_temp = 50 * rand_noise(rand_e);
+		//	u[i] = u[i] + rand_temp;
+		//	out_noise << Tt * i << ',' << setprecision(5) << rand_temp << endl;
+		//}
+		//else
+		//	out_noise << Tt * i << ',' << setprecision(5) << 0 << endl;
 		out_y_best << Tt * i << ',' << y[i] << endl;
 	}
 	out_y_best.close();
