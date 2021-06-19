@@ -161,7 +161,7 @@ double cost_function(vector<double> y_v)
 	else
 		sigma = (*y_max_pos - y_infty) / y_infty;	//超调
 	double stabile_err = y_infty - reference;
-	double fx_v = 2.0 * pow(ts - 2.5, 2) + 2.0 * pow(sigma - 0.05, 2) + 6.0 * pow(stabile_err, 2);		//评价指标
+	double fx_v = 1.0 * pow(ts - 2.5, 2) + 3.0 * pow(sigma - 0.05, 2) + 6.0 * pow(stabile_err, 2);		//评价指标
 	cout << "调节时间：" << fixed << setw(10) << setprecision(5) << ts
 		<< "   超调量：" << fixed << setw(10) << setprecision(5) << sigma
 		<< "   稳态误差：" << fixed << setw(10) << setprecision(5) << stabile_err
