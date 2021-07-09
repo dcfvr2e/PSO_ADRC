@@ -158,6 +158,7 @@ vector<double> ADRC_sim(vector<double> x_v)
 	//		       5					6.131e-05 z + 6.015e-05
 	//G(s) = ---------------   --->  --------------------------
 	//		   s^2 + 11.55s				z^2 - 1.944 z + 0.9439
+	ADRC_Init();
 	NLSEFState_Roll.beta1 = x_v[0];
 	NLSEFState_Roll.beta2 = x_v[1];
 	NLSEFState_Roll.b = x_v[2];
@@ -185,6 +186,7 @@ void function_1(vector<double> x) {		//计算并保留最优参数下的数据
 	double e = 0;
 	vector<double> y(N+1, 0);
 	vector<double> u(N+1, 0);
+	ADRC_Init();
 	NLSEFState_Roll.beta1 = x[0];
 	NLSEFState_Roll.beta2 = x[1];
 	NLSEFState_Roll.b = x[2];

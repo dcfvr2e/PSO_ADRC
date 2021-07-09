@@ -15,11 +15,6 @@ h:\project\c++\粒子群算法\pso_adrc_1\pso_adrc_1\adrc.cpp(126): warning C424
 h:\project\c++\粒子群算法\pso_adrc_1\pso_adrc_1\adrc.cpp(127): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
 h:\project\c++\粒子群算法\pso_adrc_1\pso_adrc_1\adrc.cpp(128): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
 h:\project\c++\粒子群算法\pso_adrc_1\pso_adrc_1\adrc.cpp(154): warning C4244: “初始化”: 从“double”转换到“int”，可能丢失数据
-h:\project\c++\粒子群算法\pso_adrc_1\pso_adrc_1\adrc.cpp(161): warning C4244: “=”: 从“_Ty”转换到“float”，可能丢失数据
-          with
-          [
-              _Ty=double
-          ]
 h:\project\c++\粒子群算法\pso_adrc_1\pso_adrc_1\adrc.cpp(162): warning C4244: “=”: 从“_Ty”转换到“float”，可能丢失数据
           with
           [
@@ -50,18 +45,13 @@ h:\project\c++\粒子群算法\pso_adrc_1\pso_adrc_1\adrc.cpp(167): warning C424
           [
               _Ty=double
           ]
-h:\project\c++\粒子群算法\pso_adrc_1\pso_adrc_1\adrc.cpp(170): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
-h:\project\c++\粒子群算法\pso_adrc_1\pso_adrc_1\adrc.cpp(183): warning C4244: “初始化”: 从“double”转换到“int”，可能丢失数据
-h:\project\c++\粒子群算法\pso_adrc_1\pso_adrc_1\adrc.cpp(188): warning C4244: “=”: 从“_Ty”转换到“float”，可能丢失数据
+h:\project\c++\粒子群算法\pso_adrc_1\pso_adrc_1\adrc.cpp(168): warning C4244: “=”: 从“_Ty”转换到“float”，可能丢失数据
           with
           [
               _Ty=double
           ]
-h:\project\c++\粒子群算法\pso_adrc_1\pso_adrc_1\adrc.cpp(189): warning C4244: “=”: 从“_Ty”转换到“float”，可能丢失数据
-          with
-          [
-              _Ty=double
-          ]
+h:\project\c++\粒子群算法\pso_adrc_1\pso_adrc_1\adrc.cpp(171): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
+h:\project\c++\粒子群算法\pso_adrc_1\pso_adrc_1\adrc.cpp(184): warning C4244: “初始化”: 从“double”转换到“int”，可能丢失数据
 h:\project\c++\粒子群算法\pso_adrc_1\pso_adrc_1\adrc.cpp(190): warning C4244: “=”: 从“_Ty”转换到“float”，可能丢失数据
           with
           [
@@ -87,8 +77,20 @@ h:\project\c++\粒子群算法\pso_adrc_1\pso_adrc_1\adrc.cpp(194): warning C424
           [
               _Ty=double
           ]
-h:\project\c++\粒子群算法\pso_adrc_1\pso_adrc_1\adrc.cpp(203): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
-h:\project\c++\粒子群算法\pso_adrc_1\pso_adrc_1\adrc.cpp(213): warning C4018: “<”: 有符号/无符号不匹配
+h:\project\c++\粒子群算法\pso_adrc_1\pso_adrc_1\adrc.cpp(195): warning C4244: “=”: 从“_Ty”转换到“float”，可能丢失数据
+          with
+          [
+              _Ty=double
+          ]
+h:\project\c++\粒子群算法\pso_adrc_1\pso_adrc_1\adrc.cpp(196): warning C4244: “=”: 从“_Ty”转换到“float”，可能丢失数据
+          with
+          [
+              _Ty=double
+          ]
+h:\project\c++\粒子群算法\pso_adrc_1\pso_adrc_1\adrc.cpp(205): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
+h:\project\c++\粒子群算法\pso_adrc_1\pso_adrc_1\adrc.cpp(215): warning C4018: “<”: 有符号/无符号不匹配
+  main.cpp
+h:\project\c++\粒子群算法\pso_adrc_1\pso_adrc_1\pch.h(20): warning C4244: “参数”: 从“time_t”转换到“unsigned int”，可能丢失数据
   pch.cpp
 h:\project\c++\粒子群算法\pso_adrc_1\pso_adrc_1\pch.h(20): warning C4244: “参数”: 从“time_t”转换到“unsigned int”，可能丢失数据
   正在生成代码...

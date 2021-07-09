@@ -50,9 +50,9 @@ public:
 	double w_particle;               //权重更新
 //parameters need to be tuned (beta1, beta2, b,		b1,		b2,		b3		)
 	vector<double>x_low = {	1.0,	1.0,	1.0,	1.0,	200.0, 200.0	};   //优化变量下限值
-	vector<double>x_high = { 50.0,	30.0,	10.0,	50.0,	500.0, 500.0	};   //优化变量上限值
-	vector<double>v_low = { -4.0,	-3.0,	-0.9,	 -5.0,	 -30.0, -30.0	};     //飞行速度下限值
-	vector<double>v_high = { 4.0,	3.0,	0.9,	 5.0,	 30.0,	30.0	};     //飞行速度上限值
+	vector<double>x_high = { 50.0,	50.0,	20.0,	50.0,	500.0, 500.0	};   //优化变量上限值
+	vector<double>v_low = { -4.0,	-7.0,	-2.0,	 -5.0,	 -30.0, -30.0	};     //飞行速度下限值
+	vector<double>v_high = { 4.0,	7.0,	2.0,	 5.0,	 30.0,	30.0	};     //飞行速度上限值
 	double r1, r2;                    //r1、r2为增加随机搜索性
 	void Initialize_fit_extremum();	//给定初始化粒子群速度和位置,计算粒子群适应度，初始化个体极值和全局极值
 	void Optimization_iteration();//寻优迭代
